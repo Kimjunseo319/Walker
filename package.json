@@ -1,0 +1,17 @@
+{
+  "name": "walkerproject",
+  "version": "0.0.1d",
+  "description": "Node.js Soulworker server emulator project",
+  "main": "src/app.js",
+  "author": "Kimjunseo",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "bigint-crypto-utils": "^3.0.8",
+    "mongoose": "^5.10.7",
+    "mongoose-long": "^0.3.2",
+    "sha256": "^0.2.0",
+    "smart-buffer": "^4.1.0",
+    "struct": "^0.0.12"
+  }
+}
