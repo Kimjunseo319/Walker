@@ -7,6 +7,7 @@ class CharacterSession extends Session {
   constructor(client) {
     super(client);
     this.characters = [];
+    this.charBG = 1102;
     this.selected = 0;
   }
 
@@ -16,6 +17,7 @@ class CharacterSession extends Session {
     AccountModel.findOne({ AccountKey: accountKey }, async (err, account) => {
       if (err) throw new Error(err);
       const chars = account.Characters;
+      this.charBG = account.CharacterBackground;
       for (let i = 0, l = chars.length; i < l; i++) {
         const char = await CharacterModel.findOne({ ID: chars[i].CharID });
         this.characters.push({ index: chars[i].Index, char: char });

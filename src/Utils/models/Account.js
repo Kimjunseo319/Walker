@@ -20,6 +20,7 @@ const accountSchema = new Schema({
   AccountKey: Number,
   SessionKey: Long,
   Characters: [accountCharacterSchema],
+  CharacterBackground: Number,
   SoulCash: Number,
   LastLoginTime: { type: Date, default: Date.now },
 });

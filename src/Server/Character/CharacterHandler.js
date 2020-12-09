@@ -9,6 +9,7 @@ const CharacterModel = require("../../Utils/models/Character");
 const packetHandler = require("../../Utils/packetHandler");
 const opcode = require("../../utils/opcode");
 const character = require("./Util/character");
+const Account = require("../../Utils/models/Account");
 
 class CharacterHandler extends Handler {
   constructor(session) {
@@ -23,12 +24,14 @@ class CharacterHandler extends Handler {
     const SessionKey = buf.readBigUInt64LE();
     const Unknown2 = buf.readUInt8();
 
-    const res = new SmartBuffer().writeUInt8(0).writeUInt32LE(AccountID);
     //TODO: 만약 세션키 검증을 통과하면 캐릭터 리스트를 Character Session에 집어넣기
 
     this._session.initSession({ accountKey: AccountID, sessionKey: SessionKey }, () => {
-      const encrypt = packetHandler.encrypt({ opcode: opCode.server.ServerResEnterCharacterServer, data: res.toBuffer() });
-      this._session.getClient().write(encrypt);
+      const res = new SmartBuffer().writeUInt8(0).writeUInt32LE(AccountID).writeUInt16LE(this._session.charBG).writeUInt32LE(0);
+
+      /*const encrypt = packetHandler.encrypt({ opcode: opCode.server.ServerResEnterCharacterServer, data: res.toBuffer() });
+      this._session.getClient().write(encrypt);*/
+      this.write(opCode.server.ServerResEnterCharacterServer, res.toBuffer());
     });
   }
 
@@ -82,22 +85,16 @@ class CharacterHandler extends Handler {
     const accountID = buf.readUInt32LE();
     const bg = buf.readUInt16LE();
 
-    const res = new SmartBuffer().writeUInt32LE(accountID).writeUInt16LE(bg);
+    Account.findOne({ AccountKey: accountID }, (err, account) => {
+      if (err) console.error(err);
+      account.CharacterBackground = bg;
 
-    this.write(opCode.misc.EveryBothCharSelectBG, res);
+      account.save(null, () => {
+        const res = new SmartBuffer().writeUInt32LE(accountID).writeUInt16LE(bg);
 
-    //이다음에 0x0347로 1 주고받음 근데 필수인진 모르겠음
-  }
-
-  handleClientGetBackground() {
-    const buf = SmartBuffer.fromBuffer(this._data);
-    const accountID = buf.readUInt32LE();
-
-    //TODO: 데이터베이스에서 SelectBackground 가져오기
-
-    const res = new SmartBuffer().writeUInt8(0).writeUInt32LE(accountID).writeUInt32LE(1106).writeUInt16LE(0);
-
-    this.write(opCode.misc.ServerResCharSelectBG, res);
+        this.write(opCode.misc.EveryBothSetCharSelectBG, res.toBuffer());
+      });
+    });
   }
 
   handleClientConnectGameServer() {
@@ -183,9 +180,6 @@ class CharacterHandler extends Handler {
         break;
       case opCode.misc.EveryBothSetCharSelectBG:
         this.handleClientChangeBackground();
-        break;
-      case opCode.misc.ClientReqCharSelectBG:
-        this.handleClientGetBackground();
         break;
       default:
         console.error("모르는거!", this._opcode, this._data.toString("hex"));

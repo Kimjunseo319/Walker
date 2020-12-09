@@ -38,8 +38,6 @@ const opcode = {
   },
   world: {},
   misc: {
-    ClientReqCharSelectBG: "0x0213",
-    ServerResCharSelectBG: "0x0214",
     ServerResSendOption: "0x0231",
     ServerResCurrentDate: "0x0403",
     EveryBothSetCharSelectBG: "0x032c",
