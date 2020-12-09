@@ -34,7 +34,7 @@ class CharacterHandler extends Handler {
 
   handleClientCharacterList() {
     const chars = this._session.characters;
-    let res = undefined;
+    let res = null;
     if (chars.length <= 0) {
       res = Buffer.from([0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00], "hex");
     } else {
@@ -75,6 +75,29 @@ class CharacterHandler extends Handler {
         });
       });
     });
+  }
+
+  handleClientChangeBackground() {
+    const buf = SmartBuffer.fromBuffer(this._data);
+    const accountID = buf.readUInt32LE();
+    const bg = buf.readUInt16LE();
+
+    const res = new SmartBuffer().writeUInt32LE(accountID).writeUInt16LE(bg);
+
+    this.write(opCode.misc.EveryBothCharSelectBG, res);
+
+    //이다음에 0x0347로 1 주고받음 근데 필수인진 모르겠음
+  }
+
+  handleClientGetBackground() {
+    const buf = SmartBuffer.fromBuffer(this._data);
+    const accountID = buf.readUInt32LE();
+
+    //TODO: 데이터베이스에서 SelectBackground 가져오기
+
+    const res = new SmartBuffer().writeUInt8(0).writeUInt32LE(accountID).writeUInt32LE(1106).writeUInt16LE(0);
+
+    this.write(opCode.misc.ServerResCharSelectBG, res);
   }
 
   handleClientConnectGameServer() {
@@ -157,6 +180,12 @@ class CharacterHandler extends Handler {
         break;
       case opCode.character.ClientReqCharacterSelect:
         this.handleCharacterSelect();
+        break;
+      case opCode.misc.EveryBothSetCharSelectBG:
+        this.handleClientChangeBackground();
+        break;
+      case opCode.misc.ClientReqCharSelectBG:
+        this.handleClientGetBackground();
         break;
       default:
         console.error("모르는거!", this._opcode, this._data.toString("hex"));

@@ -19,7 +19,7 @@ const characterServer = net.createServer((client) => {
       }
       session.getHanlder().execute(packet.packet.opcode, packet.packet.data);
     } catch (err) {
-      console.error(err);
+      throw new Error(err);
     }
   });
 

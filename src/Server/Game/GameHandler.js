@@ -10,6 +10,7 @@ class GameHandler extends Handler {
   }
 
   handleClientEnterGameServer() {
+    console.log("클라이언트 접근 감지!");
     const buf = SmartBuffer.fromBuffer(this._data);
     const AccountID = buf.readUInt32LE();
     const CharID = buf.readUInt32LE();
@@ -19,8 +20,11 @@ class GameHandler extends Handler {
     const Unknown4 = buf.readBigUInt64LE();
 
     this._session.initSession(CharID, () => {
+      console.log("클라이언트 Session Init!");
       this.sendTimestamp(() => {
+        console.log("클라이언트 SendTimestamp!");
         this.sendServerVersion(() => {
+          console.log("클라이언트 SendServerVersion!");
           //this.sendServerUnknown1();
           this.sendServerSpritWorker();
         });
@@ -32,23 +36,85 @@ class GameHandler extends Handler {
     return new SmartBuffer().writeUInt32LE(0).writeUInt16LE(0).writeUInt16LE(0).writeUInt16LE(3).writeUInt8(0);
   }
 
+  handleCharacterGesture() {
+    const buf = new SmartBuffer();
+    for (let i = 0; i < 6; i++) {
+      buf.writeUInt32LE(7000 + i);
+    }
+    const enc = packetHandler.encrypt({ opcode: "0x2303", data: buf.toBuffer() });
+    this._session.getClient().write(enc);
+  }
+
+  handleSkillTest() {
+    const buf = new SmartBuffer();
+    buf.writeUInt32LE(0);
+    buf.writeUInt16LE(0); //사용 스킬 포인트
+    buf.writeUInt16LE(0); //현재 스킬 포인트
+    buf.writeUInt16LE(3);
+    buf.writeUInt8(12); //가지고 있는 스킬 개수
+
+    buf.writeUInt32LE(12040011);
+    buf.writeUInt32LE(0);
+    buf.writeUInt32LE(12070011);
+    buf.writeUInt32LE(0);
+    buf.writeUInt32LE(12000211);
+    buf.writeUInt32LE(0);
+    buf.writeUInt32LE(12100011);
+    buf.writeUInt32LE(0);
+    buf.writeUInt32LE(111);
+    buf.writeUInt32LE(0);
+    buf.writeUInt32LE(11160111);
+    buf.writeUInt32LE(0);
+    buf.writeUInt32LE(11);
+    buf.writeUInt32LE(0);
+    buf.writeUInt32LE(12090011);
+    buf.writeUInt32LE(0);
+    buf.writeUInt32LE(12080011);
+    buf.writeUInt32LE(0);
+    buf.writeUInt32LE(12110011);
+    buf.writeUInt32LE(0);
+    buf.writeUInt32LE(12000411);
+    buf.writeUInt32LE(0);
+    buf.writeUInt32LE(12001211);
+    buf.writeUInt32LE(0);
+
+    buf.writeUInt8(6);
+
+    for (let i = 0; i < 6; i++) {
+      buf.writeUInt16LE(i);
+      for (let l = 0; l < 3; l++) {
+        buf.writeUInt32LE(0);
+      }
+    }
+    buf.writeUInt32LE(0);
+
+    const enc = packetHandler.encrypt({ opcode: "0x0670", data: buf.toBuffer() });
+  }
+
   handleCharacterInfo() {
     const buf = SmartBuffer.fromBuffer(this._data); //buf.readUInt32LE()
     const char = character.getCharacterData(this._session.character, true);
     this._session.getClient().write(packetHandler.encrypt({ opcode: opCode.character.ServerResCharacterInfo, data: char }));
-    this._session.getClient().write(
+    this.handleSkillTest();
+    this.handleCharacterGesture();
+    /*this._session.getClient().write(
       packetHandler.encrypt({
         opcode: "0x0670",
         data: Buffer.from(
           "000000000000000003000c8b53b800000000006f00000000000000bbc8b80000000000d31bb700000000009b7ab800000000000b000000000000004bb7b700000000002f4aaa00000000007b2cb800000000009b1cb70000000000bb1fb70000000000aba1b80000000000060000d31bb7009b1cb700bb1fb7000000000001009b1cb7000000000000000000000000000200bb1fb7000000000000000000000000000300000000000000000000000000000000000400000000000000000000000000000000000500000000000000000000000000000000000000000000000000",
           "hex"
         ),
-      })
+      }),
+      () => {
+        console.log("클라이언트 1!");
+      }
     );
 
     this._session
       .getClient()
-      .write(packetHandler.encrypt({ opcode: "0x2303", data: Buffer.from("581b0000591b00005a1b00005b1b00005c1b00005d1b0000", "hex") }));
+      .write(packetHandler.encrypt({ opcode: "0x2303", data: Buffer.from("581b0000591b00005a1b00005b1b00005c1b00005d1b0000", "hex") }), () => {
+        console.log("클라이언트 2!");
+      });
 
     this._session.getClient().write(
       packetHandler.encrypt({
@@ -57,8 +123,14 @@ class GameHandler extends Handler {
           "00010000000ccccc2c4223000000803f1d000000c8420e0000c08f440a0000c08f4401000000f040180000f048441a000000c84213000000c84212000000403f2b000000064315006666f6421400",
           "hex"
         ),
-      })
-    );
+      }),
+      () => {
+        console.log("클라이언트 3!");
+      }
+    );*/
+
+    //요기까지
+
     /* this._session.getClient(
       packetHandler.encrypt({
         opcode: "0x0670",
@@ -125,8 +197,9 @@ class GameHandler extends Handler {
       .writeUInt32LE(0)
       .writeUInt8(0)
       .toBuffer();
-
-    this._session.getClient().write(packetHandler.encrypt({ opcode: "0x0322", data: buf }));
+    this._session.getClient().write(packetHandler.encrypt({ opcode: "0x0322", data: buf }), () => {
+      console.log("클라이언트 sendServerSpritworker!");
+    });
   }
 
   sendServerUnknown1() {
@@ -204,6 +277,9 @@ class GameHandler extends Handler {
         break;
       case "0x0347":
         this._session.getClient().write(packetHandler.encrypt({ opcode: "0x0347", data: Buffer.from("01000000010f000000a041", "hex") }));
+        break;
+      case "0x0106":
+        //this._session.getClient().write();
         break;
       /*case "0x0347":
         this._session

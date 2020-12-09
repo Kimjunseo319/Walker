@@ -38,8 +38,11 @@ const opcode = {
   },
   world: {},
   misc: {
+    ClientReqCharSelectBG: "0x0213",
+    ServerResCharSelectBG: "0x0214",
     ServerResSendOption: "0x0231",
     ServerResCurrentDate: "0x0403",
+    EveryBothSetCharSelectBG: "0x032c",
     EveryBothCharacterCustom: "0x030d", //Every 양쪽다 Both Req,Res 둘다
     EveryBothSecondPass: "0x0317",
   },

@@ -7,7 +7,6 @@ const loginServer = net.createServer((client) => {
   console.log(`[Login Server] ${client.address().address}:${client.remotePort}에서 접속됨!`);
   client.on("data", (chunk) => {
     if (chunk[0] !== 2) return;
-
     const packet = packetHandler.getPacket(chunk);
     console.log(packet.packet.opcode, packet.packet.data.toString("hex"));
 

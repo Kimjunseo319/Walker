@@ -38,7 +38,7 @@ function getPacket(encBuf, toString = false) {
 function getHeaderWithSlice(packet) {
   const header = {
     magic: "0x0" + packet[0] + " 0x0" + packet[1],
-    size: packet[2] + packet[3],
+    size: packet[2] + packet[3] - 5,
     sender: packet[4],
   };
   packet = packet.slice(5);
