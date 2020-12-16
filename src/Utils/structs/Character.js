@@ -1,28 +1,28 @@
+const CharacterDB = require("../models/Character");
 class Character {
-  constructor(charID) {
-    /*this.id = 0;
-    this.username = "";
-    this.classtype = 0;
-    this.beyondstatus = 0;
-    this.illust = 0;
-    this.unknown1 = 0;
-    this.unknown2 = 0;
-    this.unknown3 = 0;
-    this.appearance = {
-      hair: 0,
-      haircolor: 0,
-      eyecolor: 0,
-      skincolor: 0,
-    };
-    this.stats = {
-      level: 0,
-    };
-    this.inventory = {
-      weapon: 0,
-      weaponupgrade: 0,
-    };
-    this.fashion = [];*/
+  /**
+   *
+   * @param {CharacterDB} charData
+   */
+  constructor(charData) {
+    this.DB = charData;
+    this.ID = charData.ID;
+    this.name = charData.UserName;
   }
 
-  static getCharacter(charID) {}
+  async createCharacter() {}
+
+  async editUserName(afterName) {
+    const res = await CharacterDB.updateOne({ ID: this.ID + 1 }, { UserName: afterName });
+    if (res.n == 0 && res.nModified == 0)
+      console.error(
+        `[Character(${this.ID})] Failed to change username! [SearchID: ${this.ID} / Change: ${this.name} -> ${afterName} / Details: n(${res.n}) nModified(${res.nModified})]`
+      );
+  }
+
+  static async getCharacter(charID) {
+    return new Character(await CharacterDB.findOne({ ID: charID }));
+  }
 }
+
+module.exports = Character;

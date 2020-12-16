@@ -6,17 +6,15 @@ function readTable(table, wrapper) {
   const buf = SmartBuffer.fromBuffer(res);
 
   const count = buf.readUInt32LE() - 1;
-  console.log(count);
-  //buf.readOffset = 58;
   let arr = [];
-  for (let i = 0; i <= 0; i++) {
+  for (let i = 0; i <= count; i++) {
     const data = new wrapper(buf).loadData();
-    console.log(data);
     arr.push({ data: data });
   }
-  console.log(arr);
-  //  const data = new wrapper(buf).loadData();
-  //  console.log(data);
+
+  wrapper.finish(arr);
+
+  return arr;
 }
 
 module.exports = {

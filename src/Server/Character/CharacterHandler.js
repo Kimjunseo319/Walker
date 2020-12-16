@@ -27,10 +27,8 @@ class CharacterHandler extends Handler {
     //TODO: 만약 세션키 검증을 통과하면 캐릭터 리스트를 Character Session에 집어넣기
 
     this._session.initSession({ accountKey: AccountID, sessionKey: SessionKey }, () => {
-      const res = new SmartBuffer().writeUInt8(0).writeUInt32LE(AccountID).writeUInt16LE(this._session.charBG).writeUInt32LE(0);
-
-      /*const encrypt = packetHandler.encrypt({ opcode: opCode.server.ServerResEnterCharacterServer, data: res.toBuffer() });
-      this._session.getClient().write(encrypt);*/
+      //const res = new SmartBuffer().writeUInt8(0).writeUInt32LE(AccountID).writeUInt16LE(this._session.charBG).writeUInt32LE(0);
+      const res = new SmartBuffer().writeUInt8(0).writeUInt32LE(AccountID).writeUInt32LE(this._session.charBG).writeUInt8(1).writeUInt8(0);
       this.write(opCode.server.ServerResEnterCharacterServer, res.toBuffer());
     });
   }
@@ -39,12 +37,13 @@ class CharacterHandler extends Handler {
     const chars = this._session.characters;
     let res = null;
     if (chars.length <= 0) {
-      res = Buffer.from([0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00], "hex");
+      //res = Buffer.from([0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00], "hex");
+      res = Buffer.alloc(15);
     } else {
       res = character.buildCharacterList(chars, this._session.getAccountKey(), this._session.getSessionKey());
     }
-    const encrypt = packetHandler.encrypt({ opcode: opCode.character.ServerResCharacterList, data: res });
-    this._session.getClient().write(encrypt);
+
+    this.write(opCode.character.ServerResCharacterList, res);
   }
 
   handleClientCreateCharacter() {
@@ -78,6 +77,31 @@ class CharacterHandler extends Handler {
         });
       });
     });
+  }
+
+  handleClientChangeCharacterSlot() {
+    const buf = SmartBuffer.fromBuffer(this._data);
+    buf.readOffset = 15;
+    const char1 = buf.readUInt8();
+    const char2 = buf.readUInt8();
+
+    AccountModel.findOne({ AccountKey: this._session.getAccountKey() }, (err, account) => {
+      if (err) throw new Error(err);
+      const _this = this;
+      let char_dummy = [];
+      Object.keys(account.Characters).filter(function (key) {
+        const char = account.Characters[key];
+        if (char.Index == char1) char_dummy[0] = { index: char.Index, key: key };
+        if (char.Index == char2) char_dummy[1] = { index: char.Index, key: key };
+      });
+      account.Characters[char_dummy[0].key] = char_dummy[1].index;
+      account.Characters[char_dummy[1].key] = char_dummy[0].index;
+      account.save(null, () => {
+        console.log("캐릭터 위치 변경이 완료되었습니다!");
+      });
+    });
+
+    console.log(`${char1}번 캐릭터를 ${char2}로 옮겼습니다`);
   }
 
   handleClientChangeBackground() {
@@ -119,11 +143,7 @@ class CharacterHandler extends Handler {
       .writeInt16LE(-1); //FF FF
     character.writeEmpty(res, 36); //36칸 빈공간
 
-    const encrypt = packetHandler.encrypt({
-      opcode: opCode.server.ServerResGameServerConnection,
-      data: res.toBuffer(),
-    });
-    this._session.getClient().write(encrypt);
+    this.write(opCode.server.ServerResGameServerConnection, res.toBuffer());
 
     //.writeBigUInt64LE(BigInt(0)) //모르겠음 (본섭: 06 01 02 00[131334] 31 32 20 00[2110001]) 32 32 일수도 있음
     //.writeUInt32LE(0); //모르겠음 (본섭: 31 32 20 00, [2110001])
@@ -131,7 +151,6 @@ class CharacterHandler extends Handler {
 
   handleCharacterSelect() {
     const buf = SmartBuffer.fromBuffer(this._data);
-    buf.readUInt8();
     const index = buf.readUInt8();
     this._session.selected = index;
     console.log(`${this._session._accountKey} 유저의 캐릭터 선택값을 ${this._session.selected}로 변경했습니다!`);
@@ -150,8 +169,7 @@ class CharacterHandler extends Handler {
       .writeUInt16LE(date.getSeconds())
       .writeUInt16LE(0);
 
-    const encrypt = packetHandler.encrypt({ opcode: opCode.misc.ServerResCurrentDate, data: time.toBuffer() });
-    this._session.getClient().write(encrypt);
+    this.write(opCode.misc.ServerResCurrentDate, time.toBuffer());
   }
 
   execute(opcode, data) {
@@ -181,6 +199,8 @@ class CharacterHandler extends Handler {
       case opCode.misc.EveryBothSetCharSelectBG:
         this.handleClientChangeBackground();
         break;
+      case opCode.character.ClientReqCharacterSlotChange:
+        this.handleClientChangeCharacterSlot();
       default:
         console.error("모르는거!", this._opcode, this._data.toString("hex"));
         break;

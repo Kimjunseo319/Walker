@@ -4,7 +4,7 @@ const db = mongoose.connection;
 
 db.on("error", console.error);
 db.once("open", () => {
-  console.log("[DBManager]DB에 연결되었습니다!");
+  console.log("[DBManager]Connected to DB!");
 });
 
 function conn() {

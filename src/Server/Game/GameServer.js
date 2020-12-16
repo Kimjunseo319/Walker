@@ -1,7 +1,7 @@
 const net = require("net");
 const packetHandler = require("../../Utils/packetHandler");
 const GameSession = require("../Sessions/GameSession");
-const GameHandler = require("./GameHandler");
+const GameHandler = require("./GameHandler.js");
 
 const gameServer = net.createServer((client) => {
   console.log(`[Game Server] ${client.address().address}:${client.remotePort}에서 접속됨!`);

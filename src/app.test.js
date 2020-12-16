@@ -9,6 +9,8 @@ const MapTable = require("./Utils/tables/MapTable");
 const ItemTable = require("./Utils/tables/ItemTable");
 const SkillTable = require("./Utils/tables/SkillTable");
 
+const CharacterModel = require("./Utils/structs/Character");
+
 database.conn();
 
 function test() {
@@ -35,5 +37,12 @@ function testproto() {
   }
 }
 
+async function test2() {
+  const char = await CharacterModel.getCharacter(3684825);
+  console.log(char);
+  char.editUserName("오오개쩐다");
+}
+
 //test();
-testproto();
+//testproto();
+test2();

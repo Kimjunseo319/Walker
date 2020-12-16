@@ -3,9 +3,9 @@ const sha = require("sha256");
 
 const Handler = require("../../Utils/Handler");
 const { opCode } = require("../../utils/opcode");
+const packetHandler = require("../../Utils/packetHandler");
 
 const AccountModel = require("../../Utils/models/Account");
-const packetHandler = require("../../Utils/packetHandler");
 
 const Option = require("../../../option.json");
 
