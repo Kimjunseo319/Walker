@@ -5,3 +5,5 @@ SoulWorker.lnk
 Soulworker - 복사본.lnk
 yarn-error.log
 sw_wireshark.lua
+
+*.temp.js
