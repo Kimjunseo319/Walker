@@ -2,6 +2,7 @@ const { opCode } = require("./opcode");
 
 const crypto = require("crypto");
 const { SmartBuffer } = require("smart-buffer");
+const opcode = require("./opcode");
 
 // prettier-ignore
 const key = Buffer.from([
@@ -19,14 +20,14 @@ const key = Buffer.from([
  *
  * @param {Buffer} encBuf
  */
-function getPacket(encBuf, toString = false) {
+function getPacket(encBuf) {
   //if()
   const { header, packet } = getHeaderWithSlice(encBuf);
   const buf = getRawData(decrypt(packet));
 
   return {
     header: header,
-    packet: toString ? { opcode: buf.opcode, data: buf.data.toString("hex") } : buf,
+    packet: buf,
   };
 }
 
@@ -36,10 +37,13 @@ function getPacket(encBuf, toString = false) {
  * @param {byte[]} packet Client에게 받은 패킷
  */
 function getHeaderWithSlice(packet) {
+  const buf = Buffer.from(packet);
+  console.log();
+
   const header = {
-    magic: "0x0" + packet[0] + " 0x0" + packet[1],
-    size: packet[2] + packet[3] - 5,
-    sender: packet[4],
+    magic: "0x0" + buf.readUInt8(0) + " 0x0" + buf.readUInt8(1),
+    size: buf.readUInt16LE(2) - 5,
+    sender: buf.readUInt8(4),
   };
   packet = packet.slice(5);
   return {

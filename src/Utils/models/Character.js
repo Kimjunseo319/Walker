@@ -15,24 +15,27 @@ const StatSchema = new Schema({
 });
 
 const FashionSchema = new Schema({
-  UniqueID: Number,
-  Unknown: Number,
+  unk1: Number,
+  unk2: Number,
   ID: Number,
-  Dye: Number,
+  dye: Number,
+  pos: Number,
+});
+
+const InventorySchema = new Schema({
+  Fashion: [FashionSchema],
 });
 
 const characterSchema = new Schema({
   ID: Number,
+  Index: Number,
   UserName: String,
   ClassType: Number,
-  BeyondStatus: Number,
-  Illust: Number,
-  Unknown1: Number,
-  Unknown2: Number,
-  Unknown3: Number,
+  ClassAdvance: Number,
+  Photo: Number,
   Appearance: AppearanceSchema,
   Stat: StatSchema,
-  Fashion: [FashionSchema],
+  Inventory: InventorySchema,
 });
 
 module.exports = mongoose.model("character", characterSchema);

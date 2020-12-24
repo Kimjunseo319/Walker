@@ -16,7 +16,7 @@ class PhotoTable extends Table {
     this.quickPartyImg = this.buf.readString(this.buf.readUInt16LE() * 2, "utf16le");
     this.loadingImg = this.buf.readString(this.buf.readUInt16LE() * 2, "utf16le");
     this.classification = this.buf.readInt8();
-    this.AdvanceRequire = this.buf.readInt8();
+    this.advanceRequire = this.buf.readInt8();
 
     //console.log(`[PhotoTable] ${this.charSelectImg}(${this.id}, ${this.classification}) photo has been added!`);
 
@@ -27,7 +27,7 @@ class PhotoTable extends Table {
     if (global.tables.photos === undefined) return null;
     return global.tables.photos.filter((photo) => {
       return photo.id === photoid;
-    });
+    })[0];
   }
 
   static finish(arr) {

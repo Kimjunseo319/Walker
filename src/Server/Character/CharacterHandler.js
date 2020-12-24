@@ -10,6 +10,10 @@ const packetHandler = require("../../Utils/packetHandler");
 const opcode = require("../../utils/opcode");
 const character = require("./Util/character");
 const Account = require("../../Utils/models/Account");
+const CharacterList = require("../../Utils/structs/CharacterList");
+const Haru = require("../../Utils/structs/Characters/Classes/Haru");
+const Appearance = require("../../Utils/structs/Characters/Appearance");
+const CharacterUtil = require("./CharacterUtil");
 
 class CharacterHandler extends Handler {
   constructor(session) {
@@ -26,29 +30,21 @@ class CharacterHandler extends Handler {
 
     //TODO: 만약 세션키 검증을 통과하면 캐릭터 리스트를 Character Session에 집어넣기
 
-    this._session.initSession({ accountKey: AccountID, sessionKey: SessionKey }, () => {
-      //const res = new SmartBuffer().writeUInt8(0).writeUInt32LE(AccountID).writeUInt16LE(this._session.charBG).writeUInt32LE(0);
-      const res = new SmartBuffer().writeUInt8(0).writeUInt32LE(AccountID).writeUInt32LE(this._session.charBG).writeUInt8(1).writeUInt8(0);
+    //this._session.initSession({ accountKey: AccountID, sessionKey: SessionKey }, () => {
+    this._session.initSession(AccountID, SessionKey, () => {
+      const res = new SmartBuffer().writeUInt8(0).writeUInt32LE(AccountID).writeUInt32LE(this._session.charBG).writeUInt8(0).writeUInt8(0); //16 32 0?
       this.write(opCode.server.ServerResEnterCharacterServer, res.toBuffer());
     });
   }
 
   handleClientCharacterList() {
     const chars = this._session.characters;
-    let res = null;
-    if (chars.length <= 0) {
-      //res = Buffer.from([0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00], "hex");
-      res = Buffer.alloc(15);
-    } else {
-      res = character.buildCharacterList(chars, this._session.getAccountKey(), this._session.getSessionKey());
-    }
-
-    this.write(opCode.character.ServerResCharacterList, res);
+    this.write(opCode.character.ServerResCharacterList, chars.length <= 0 ? Buffer.alloc(15) : chars.toBuffer(this._session));
   }
 
   handleClientCreateCharacter() {
-    const char = character.readCharacterData(this._data);
-    character.saveNewCharacterData(char, this._session.getAccountKey(), () => {
+    const char = CharacterUtil.createCharacter(SmartBuffer.fromBuffer(this._data), this._session);
+    CharacterUtil.saveNewCharacter(char, () => {
       this._session.updateSession(() => {
         this.handleClientCharacterList();
       });
@@ -58,25 +54,31 @@ class CharacterHandler extends Handler {
   handleClientRemoveCharacter() {
     const charID = this._data.readUInt32LE();
     const accountKey = this._session.getAccountKey();
-    CharacterModel.findOne({ ID: charID }, (err, char) => {
-      AccountModel.findOne({ AccountKey: accountKey }, (err, account) => {
-        const _this = this;
-        Object.keys(account.Characters).filter(function (key) {
-          if (account.Characters[key].CharID === charID) {
-            account.Characters[key].remove();
-            account.save(null, () => {
-              char.remove(null, () => {
-                _this._session.updateSession(() => {
-                  const buf = new SmartBuffer().writeUInt8(1).writeUInt32LE(charID).toBuffer();
-                  _this._session.getClient().write(packetHandler.encrypt({ opcode: "", data: buf }));
+    if (charID != 1) {
+      //!FOR DEBUG!
+      CharacterModel.findOne({ ID: charID }, (err, char) => {
+        AccountModel.findOne({ AccountKey: accountKey }, (err, account) => {
+          const _this = this;
+          Object.keys(account.Characters).filter(function (key) {
+            if (account.Characters[key].CharID === charID) {
+              account.Characters[key].remove();
+              account.save(null, () => {
+                char.remove(null, () => {
+                  _this._session.updateSession(() => {
+                    _this.handleClientCharacterList();
+                  });
+                  console.log(`[Character]${charID}의 캐릭터 삭제가 완료되었습니다!`);
                 });
-                console.log(`[Character]${charID}의 캐릭터 삭제가 완료되었습니다!`);
               });
-            });
-          }
+            }
+          });
         });
       });
-    });
+    } else {
+      this._session.updateSession(() => {
+        this.handleClientCharacterList();
+      });
+    }
   }
 
   handleClientChangeCharacterSlot() {

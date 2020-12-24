@@ -24,10 +24,12 @@ class MapTable extends Table {
     this.unknown7 = this.buf.readUInt8();
 
     delete this.buf;
-    console.log(`[MapTable] 맵 ${this.worldName}이 추가되었습니다!`);
+    console.log(`[MapTable] 맵 ${this.worldName}이 추가되었습니다!`, this);
 
     return this;
   }
+
+  finish(arr) {}
 }
 
 module.exports = MapTable;

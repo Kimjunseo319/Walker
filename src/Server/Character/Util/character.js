@@ -232,11 +232,11 @@ function getCharacterData(char, meta = false) {
     .writeUInt8(0)
     .writeInt32LE(-1);
   for (let i = 0; i < 14; i++) {
-    const item = char.Fashion[i];
-    buf.writeInt32LE(item.UniqueID); //아이템 UNIQUEID?
-    buf.writeInt32LE(item.Unknown);
+    const item = char.Inventory.Fashion[i];
+    buf.writeInt32LE(item.unk1); //아이템 UNIQUEID?
+    buf.writeInt32LE(item.unk2);
     buf.writeInt32LE(item.ID);
-    buf.writeUInt32LE(item.Dye); //아이템 염색
+    buf.writeUInt32LE(item.dye); //아이템 염색
 
     buf.writeInt32LE(-1);
     buf.writeInt32LE(-1);

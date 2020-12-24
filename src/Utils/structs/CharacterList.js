@@ -1,0 +1,70 @@
+const { SmartBuffer } = require("smart-buffer");
+const CharacterClass = require("./Characters/Classes/CharacterClass");
+
+const Session = require("../../Server/Sessions/Session");
+
+class CharacterList {
+  /**
+   *
+   * @param  {...CharacterClass} chars
+   */
+  constructor(...chars) {
+    if (Array.isArray(chars[0])) {
+      this.chars = chars[0];
+    } else {
+      this.chars = chars;
+    }
+  }
+
+  /**
+   *
+   * @param {Session} session
+   */
+  toBuffer(session) {
+    const buf = new SmartBuffer().writeUInt8(
+      this.chars.length + 1 //!FOR DEBUG!
+    );
+
+    let selID = 0;
+
+    this.chars.forEach((char) => {
+      if (char.characterID === 0 || char.classType === 0 || char.index <= 0) console.error(`[CharacterList]Required parameter does not exist`, char);
+      selID = char.characterID;
+      buf
+        .writeBuffer(char.toBuffer())
+        //idk :(
+        .writeBuffer(Buffer.alloc(64))
+        .writeUInt16LE(16256)
+        .writeUInt16LE(0)
+        .writeUInt16LE(16256)
+        .writeBuffer(Buffer.alloc(24))
+
+        .writeUInt16LE(char.index)
+        .writeBigInt64LE(BigInt(0));
+    });
+
+    this.toDebug(buf); //!FOR DEBUG!
+
+    buf
+      .writeUInt32LE(selID)
+      .writeUInt16LE(1)
+      .writeBigUInt64LE(BigInt(0))
+      .writeUInt32LE(session.getAccountKey())
+      .writeBigInt64LE(BigInt(session.getSessionKey()))
+      .writeUInt16LE(17);
+
+    return buf.toBuffer();
+  }
+
+  toDebug(buf) {
+    //Add character to list for refresh character
+    buf.writeBuffer(
+      Buffer.from(
+        "0100000016004C0069007300740052006500660072006500730068000100264E0000000000004D043508ED131D0C0000000000000000010000000000000000000000E5E59D0600FFFFFFFFFFFFFFFFFFFFFFFF0000000000000000FFFFFFFFFFFFFFFFFFFFFFFF00000000FFFFFFFFFFFFFFFFFFFFFFFF00000000FFFFFFFFFFFFFFFFFFFFFFFF00000000FFFFFFFFFFFFFFFFFFFFFFFF00000000FFFFFFFFFFFFFFFFFFFFFFFF00000000FFFFFFFFFFFFFFFFFFFFFFFF00000000FFFFFFFFFFFFFFFFFFFFFFFF00000000FFFFFFFFFFFFFFFFFFFFFFFF00000000FFFFFFFFFFFFFFFFFFFFFFFF00000000FFFFFFFFFFFFFFFFFFFFFFFF00000000FFFFFFFFFFFFFFFFFFFFFFFF00000000FFFFFFFFFFFFFFFFFDB7990C00000000FFFFFFFFFFFFFFFFFFFFFFFF00000000FFFFFFFFFFFFFFFFFFFFFFFF00000000FFFFFFFFFFFFFFFFFFFFFFFF00000000FFFFFFFFFFFFFFFF8DB9990C00000000FFFFFFFFFFFFFFFFFFFFFFFF00000000FFFFFFFFFFFFFFFFF1B9990C00000000FFFFFFFFFFFFFFFFFFFFFFFF00000000FFFFFFFFFFFFFFFFFFFFFFFF00000000FFFFFFFFFFFFFFFFFFFFFFFF00000000FFFFFFFFFFFFFFFF61B8990C00000000FFFFFFFFFFFFFFFFFFFFFFFF00000000FFFFFFFFFFFFFFFFFFFFFFFF00000000FFFFFFFFFFFFFFFFFFFFFFFF00000000FFFFFFFFFFFFFFFFFFFFFFFF00000000FFFFFFFFFFFFFFFFFFFFFFFF0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000803F0000803F00000000000000000000000000000000000000000000000009000000000000000000",
+        "hex"
+      )
+    );
+  }
+}
+
+module.exports = CharacterList;

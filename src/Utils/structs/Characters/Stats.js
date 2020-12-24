@@ -15,11 +15,11 @@ class Stats {
     this.baseStats = {
       health: health,
       defence: defence,
-      superArmor: armor,
-      attackMin: atkmin,
-      attackMax: atkmax,
-      criticalDamage: critdmg,
-      criticalChance: critchance,
+      superArmor: superarmor,
+      attackMin: attackMin,
+      attackMax: attackMax,
+      criticalDamage: critDmg,
+      criticalChance: critChance,
       accuracy: accuracy,
       evasionRate: evasionRate,
     };
@@ -51,11 +51,11 @@ class Stats {
     this.growStats = {
       health: health,
       defence: defence,
-      superArmor: armor,
-      attackMin: atkmin,
-      attackMax: atkmax,
-      criticalDamage: critdmg,
-      criticalChance: critchance,
+      superArmor: superarmor,
+      attackMin: attackMin,
+      attackMax: attackMax,
+      criticalDamage: critDmg,
+      criticalChance: critChance,
       accuracy: accuracy,
       evasionRate: evasionRate,
     };
@@ -70,6 +70,8 @@ class Stats {
     }
     return this.growStats;
   }
+
+  toBuffer() {}
 
   /**
    * check object is empty

@@ -1,3 +1,5 @@
+const { SmartBuffer } = require("smart-buffer");
+
 class Appearance {
   constructor() {
     this.fashions = {
@@ -8,7 +10,6 @@ class Appearance {
       eye: 0,
       skin: 0,
     };
-    this.photo = null;
   }
 
   setFashions(hair) {
@@ -33,6 +34,28 @@ class Appearance {
 
   getColors() {
     return this.colors;
+  }
+
+  toBuffer() {
+    return new SmartBuffer()
+      .writeUInt16LE(this.fashions.hair)
+      .writeUInt16LE(this.colors.hair)
+      .writeUInt16LE(this.colors.eye)
+      .writeUInt16LE(this.colors.skin)
+      .toBuffer();
+  }
+
+  /**
+   *
+   * @param {SmartBuffer} buf
+   */
+  static fromBuffer(buf) {
+    const hair = buf.readUInt16LE();
+    const hairColor = buf.readUInt16LE();
+    const eyeColor = buf.readUInt16LE();
+    const skinColor = buf.readUInt16LE();
+
+    return new Appearance().setFashions(hair).setColors(hairColor, eyeColor, skinColor);
   }
 }
 

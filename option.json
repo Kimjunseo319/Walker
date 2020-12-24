@@ -3,7 +3,8 @@
     "SKILL_PRESET_COL": 6,
     "SKILL_PRESET_ROW": 3,
 
-    "MAX_GESTURE_SLOT": 6
+    "MAX_GESTURE_SLOT": 6,
+    "MAX_EQUIPPED_FASHION_INV": 14
   },
   "ServerList": [
     {
