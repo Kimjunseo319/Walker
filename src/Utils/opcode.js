@@ -25,8 +25,8 @@ const opcode = {
     ClientReqCreateCharacter: "0x0301",
     ClientReqRemoveCharacter: "0x0302",
     ClientCharacterSelect: "0x0371",
-    ClientReqCharacterSlotChangeView: "0x0313",
-    ServerResCharacterSlotChangeView: "0x0313",
+    //ClientReqCharacterSlotChangeView: "0x0313",
+    //ServerResCharacterSlotChangeView: "0x0313",
     ClientReqCharacterSlotChange: "0x0306",
     ServerResCharacterSlotChange: "0x0107", //?? 이거 잘 모르겠네 0x0318일수도?
     ClientReqCharacterSelect: "0x0347",

@@ -101,46 +101,6 @@ class LoginHandler extends Handler {
   }
 
   sendLoginData(accountID, mac, type = LoginType.Success, errorMessage = "") {
-    /*const AuthRes = new SmartBuffer()
-      .writeUInt32LE(iserr ? 0 : this._session.getAccountKey())
-      .writeUInt8(iserr ? 0 : 1)
-      .writeString(iserr ? 0 : mac)
-      .writeUInt16LE(errmsg.length * 2)
-      .writeString(errmsg, "utf16le")
-      .writeUInt16LE(iserr ? 1 : 0)
-      .writeString("")
-      .writeUInt32LE(0)
-      .writeUInt8(0)
-      .writeUInt8(1)
-      .writeUInt16LE(id.length * 2)
-      .writeString(id, "utf16le")
-      .writeBigUInt64LE(this._session.getSessionKey())
-      .writeUInt32LE(0)
-      .writeUInt8(0)
-      .writeUInt16LE(0)
-      .writeUInt8(0)
-      .writeUInt8(0)
-      .writeUInt8(0);*/
-
-    /*const AuthRes = new SmartBuffer() //강제 로그인 실패 테스트
-      .writeUInt32LE(0) //ACCOUNT ID
-      .writeInt8(0) //MAC 길이 가능성
-      //.writeString("") //MAC
-      .writeBuffer(Buffer.from("000000000000000000000000000000000000", "hex"))
-      .writeUInt16LE(6) //ERROR MSG LEN
-      .writeString("테스트", "utf16le") //ERROR MSG
-      .writeUInt32LE(0) //ERROR CODE
-      .writeInt8(0)
-      .writeUInt16LE(6) //UNK MSG LEN
-      .writeString("테스트", "utf16le") //UNK MSG
-      .writeBigUInt64LE(BigInt(0)) //SESSION KEY
-      .writeInt8(0)
-      .writeInt16LE(0)
-      .writeInt8(0)
-      .writeInt8(0)
-      .writeInt8(0);
-*/
-
     const AuthRes = new SmartBuffer().writeUInt32LE(accountID).writeInt8(0);
 
     if (type == LoginType.Success) {
@@ -153,7 +113,7 @@ class LoginHandler extends Handler {
         .writeString("", "utf16le")
         .writeBigUInt64LE(this._session.getSessionKey());
     } else {
-      AuthRes.writeBuffer(Buffer.from("000000000000000000000000000000000000", "hex"))
+      AuthRes.writeBuffer(Buffer.alloc(18))
         .writeUInt16LE(errorMessage.length * 2)
         .writeString(errorMessage, "utf16le")
         .writeUInt32LE(type)

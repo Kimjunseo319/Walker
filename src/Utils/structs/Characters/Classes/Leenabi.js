@@ -29,11 +29,17 @@ class Leenabi extends CharacterClass {
     const fashioninv = new FashionInventory();
 
     //fashioninv.setDefaultClothes(CharacterClass.classTable.Leenabi, 1);
-    const fashions = [
+    /*const fashions = [
       new FashionItem(92, 21806250, 291001051, 0, FashionInventory.FashionSlot.Gloves),
       new FashionItem(91, 21806250, 291001091, 0, FashionInventory.FashionSlot.Top),
       new FashionItem(94, 21806250, 291001111, 0, FashionInventory.FashionSlot.Shoes),
       new FashionItem(93, 21806250, 291001121, 0, FashionInventory.FashionSlot.unk11),
+    ];*/
+    const fashions = [
+      new FashionItem(-1, -1, 293152052, 0, FashionInventory.FashionSlot.Gloves),
+      new FashionItem(-1, -1, 293152112, 0, FashionInventory.FashionSlot.Stocking),
+      new FashionItem(-1, -1, 293152122, 0, FashionInventory.FashionSlot.Shoes),
+      new FashionItem(-1, -1, 293152092, 0, FashionInventory.FashionSlot.Top),
     ];
     fashioninv.createInventory(fashions);
 

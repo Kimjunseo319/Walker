@@ -133,11 +133,14 @@ class CharacterHandler extends Handler {
     const res = new SmartBuffer()
       .writeUInt32LE(CharID)
       .writeUInt32LE(this._session.getAccountKey())
-      .writeUInt32LE(131334) //이거 모르겠음 ㅎ
+      //.writeUInt32LE(131334) //이거 모르겠음 ㅎ
+      .writeUInt32LE(131332) //바뀜 위에꺼
       .writeUInt32LE(2110001) //똑같음
       .writeUInt32LE(2110001) //똑같음
-      .writeUInt32LE(93110) //모르겠음 (본섭: B6 6B 01 00[93110])
-      .writeUInt32LE(414327) //모르겠음 (본섭: 77 52 06 00[414327])
+      //.writeUInt32LE(93110) //모르겠음 (본섭: B6 6B 01 00[93110])
+      .writeUInt32LE(109949) //바뀜 위에꺼
+      //.writeUInt32LE(414327) //모르겠음 (본섭: 77 52 06 00[414327])
+      .writeUInt32LE(283255) //바뀜 위에꺼
       .writeBigUInt64LE(BigInt(0)) //8칸 빈공간
       .writeUInt16LE("127.0.0.1".length)
       .writeString("127.0.0.1", "utf8")
