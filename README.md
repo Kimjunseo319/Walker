@@ -32,11 +32,11 @@
 ### Character Server
 
 > - [x] Send Character List
-> - [x] Create Character Function
-> - [ ] Remove Character Function(partially)
+> - [x] Create Character Function(Since the code is being improved, it is impossible to create characters other than Haru and Leenabi)
+> - [x] Remove Character Function
 > - [x] Set Character Select Background
 > - [x] Send Character Background
-> - [ ] Get character appearance when creating a character(working)
+> - [x] Get character appearance when creating a character
 > - [x] Make Character DB
 
 ### Game Server
