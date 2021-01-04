@@ -16,7 +16,7 @@ class FashionItem extends Item {
     this.unk2 = unk2;
     this.dye = dye;
     this.pos = pos;
-    console.log(`[FashionItem]Fashion Item is created!`, this);
+    //console.log(`[FashionItem]Fashion Item is created!`, this);
   }
 
   toBuffer() {

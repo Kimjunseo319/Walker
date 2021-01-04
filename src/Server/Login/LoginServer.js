@@ -20,6 +20,7 @@ const loginServer = net.createServer((client) => {
 
   client.on("end", () => {
     let session = LoginSession.getSession(client);
+    if (session === undefined) return;
     session.destroySession();
     console.log("[Login Server] 클라이언트 접속 종료");
   });

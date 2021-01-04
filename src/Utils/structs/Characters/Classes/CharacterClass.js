@@ -58,14 +58,17 @@ class CharacterClass {
     this.classAdvance = 0; //0 - Normal / 1 - First Advance / 2 - Desire Advance
     this.exp = 0;
 
-    this.money = 0;
+    this.zenny = 0;
     this.aether = 0;
     this.bp = 0;
 
     this.energy = 200;
     this.extraEnergy = 0;
 
-    this.mapID = 10003;
+    this.mapID = 10031;
+
+    this.channel = {};
+    this.block = false; //!NO LAG!
   }
 
   toBuffer() {
@@ -92,46 +95,85 @@ class CharacterClass {
       .toBuffer();
   }
 
-  toMetadataBuffer() {
-    return new SmartBuffer()
-      .writeUInt32LE(0)
-      .writeUInt32LE(0)
-      .writeUInt32LE(0)
-      .writeUInt32LE(0)
-      .writeUInt16LE(0)
-      .writeUInt32LE(0)
+  toMetadataBufferRaw() {
+    return Buffer.from(
+      "000000000000000000000000000000000000000000007E0400007E040000C8000000C80000000000000000000000640000006400000000000000000000000000C8420000C842000000C8002C010000000000000000000000000000000000000000000001000000001327660000041327020000BA2146EBC51E468E38CA420000B4420040C9430040C9430000000000000000000000000000000000000000BF3EFFDF196D3F1C0000000000000000000000000000000000000000000000000900313532303638353537000000000000000000000000000000000000000000000001",
+      "hex"
+    );
+  }
 
-      .writeUInt32LE(this.stats.baseStats.health)
-      .writeUInt32LE(this.stats.baseStats.health)
-      .writeUInt32LE(200)
-      .writeUInt32LE(200)
+  toMetadataBuffer() {
+    const buf = new SmartBuffer()
+      .writeUInt32LE(0)
+      .writeUInt32LE(0) //main title
+      .writeUInt32LE(0) //sub title
+      .writeUInt32LE(0) //guild id
+      .writeUInt16LE(0) //guild name len
+      .writeString("", "utf16le") //guild name
+      .writeUInt32LE(132645878)
+      .writeUInt32LE(this.stats.baseStats.health) //curr hp
+      .writeUInt32LE(this.stats.baseStats.health) //max hp
+      .writeUInt32LE(200) //curr sg
+      .writeUInt32LE(200) //max sg
+      .writeUInt32LE(0) //unk
+      .writeUInt32LE(0) //unk
+      .writeUInt32LE(100) //unk
+      .writeUInt32LE(102) //max stamina
+      .writeUInt32LE(0) //unk
+      .writeUInt32LE(0) //unk
+      .writeFloatLE(100) //max move speed
+      .writeFloatLE(104.5) //max attack speed
+      .writeUInt16LE(0) //unk
+      .writeUInt8(0) //unk
+      .writeUInt16LE(200) //energy
+      .writeUInt16LE(400) //extra energy
+      .writeUInt8(0) //unk
+      .writeInt8(0) //unk
+      .writeInt8(7) //unk
+      .writeUInt32LE(960464669) //unk
+      .writeUInt16LE(0) //unk
+      .writeUInt32LE(0) //unk
+      .writeUInt32LE(0) //unk
+      .writeUInt8(0) //slot?
+      .writeUInt32LE(0) //unk
+      .writeInt8(1) //unk
+      .writeUInt32LE(0) //unk
+      .writeUInt16LE(this.mapID) //map
+      .writeUInt16LE(102) //unk
+      .writeUInt8(0) //unk
+      .writeUInt8(1) //unk but map
+      .writeUInt16LE(this.mapID) //map
+      .writeUInt16LE(7) //unk but map
+      .writeBuffer(this.position.toBuffer()) //pos
+      .writeFloatLE(2922.5) //unk but pos
+      .writeFloatLE(2922.5) //unk but pos
+      .writeInt8(-3) //unk
+      .writeInt8(-44) //unk
+      .writeUInt16LE(this.exp) // exp
+      .writeUInt16LE(this.zenny) //zenny
+      .writeInt8(-126)
+      .writeInt8(2)
+      .writeUInt32LE(0)
+      .writeUInt32LE(2)
+      .writeUInt32LE(3758046911)
+      .writeUInt32LE(473918745)
+      .writeUInt32LE(55967)
+      .writeUInt32LE(0)
+      .writeUInt16LE(2176)
+      .writeInt8(51)
+      .writeBuffer(Buffer.alloc(13))
+      .writeUInt16LE(8) //len
+      .writeString("10954090", "utf8")
       .writeUInt32LE(0)
       .writeUInt32LE(0)
-      .writeUInt32LE(100)
-      .writeUInt32LE(100)
       .writeUInt32LE(0)
       .writeUInt32LE(0)
-      .writeFloatLE(100.0)
-      .writeFloatLE(100.0)
+      .writeUInt32LE(0)
       .writeUInt16LE(0)
-      .writeUInt8(0)
-      .writeUInt16LE(this.energy)
-      .writeUInt16LE(this.extraEnergy)
-      .writeBigInt64LE(BigInt(0))
-      .writeUInt32LE(0)
-      .writeUInt16LE(0)
-      .writeUInt16LE(this.mapID)
-      .writeUInt16LE(101)
-      .writeUInt16LE(256)
-      .writeUInt16LE(this.mapID)
-      .writeUInt16LE(1)
-      .writeFloatLE(this.position.x)
-      .writeFloatLE(this.position.y)
-      .writeFloatLE(this.position.z)
-      .writeFloatLE(this.position.rotation)
-      .writeFloatLE(0)
-      .writeFloatLE(0)
-      .toBuffer();
+      .writeInt8(0)
+      .writeInt8(1); //result
+
+    return buf.toBuffer();
   }
 
   /**

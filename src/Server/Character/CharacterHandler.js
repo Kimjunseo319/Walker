@@ -8,7 +8,6 @@ const CharacterModel = require("../../Utils/models/Character");
 
 const packetHandler = require("../../Utils/packetHandler");
 const opcode = require("../../utils/opcode");
-const character = require("./Util/character");
 const Account = require("../../Utils/models/Account");
 const CharacterList = require("../../Utils/structs/CharacterList");
 const Haru = require("../../Utils/structs/Characters/Classes/Haru");
@@ -130,25 +129,39 @@ class CharacterHandler extends Handler {
     const CharIndex = buf.readUInt8();
     const Unknown2 = buf.readBigUInt64LE();
 
+    console.log(this._session.characters);
+
     const res = new SmartBuffer()
       .writeUInt32LE(CharID)
       .writeUInt32LE(this._session.getAccountKey())
-      //.writeUInt32LE(131334) //이거 모르겠음 ㅎ
-      .writeUInt32LE(131332) //바뀜 위에꺼
-      .writeUInt32LE(2110001) //똑같음
-      .writeUInt32LE(2110001) //똑같음
-      //.writeUInt32LE(93110) //모르겠음 (본섭: B6 6B 01 00[93110])
-      .writeUInt32LE(109949) //바뀜 위에꺼
-      //.writeUInt32LE(414327) //모르겠음 (본섭: 77 52 06 00[414327])
-      .writeUInt32LE(283255) //바뀜 위에꺼
+      .writeUInt32LE(131330)
+      .writeUInt32LE(0) //똑같음
+      .writeUInt32LE(0) //똑같음
+      .writeUInt16LE(102)
+      .writeUInt8(0)
+      .writeUInt8(4)
+      //.writeUInt16LE(10003) //캐릭터 맵 위치
+      .writeUInt16LE(this._session.characters.chars[this._session.selected].mapID)
+      .writeUInt16LE(2)
       .writeBigUInt64LE(BigInt(0)) //8칸 빈공간
       .writeUInt16LE("127.0.0.1".length)
       .writeString("127.0.0.1", "utf8")
       .writeUInt16LE(10200)
-      .writeInt16LE(-1); //FF FF
-    character.writeEmpty(res, 36); //36칸 빈공간
+      .writeUInt16LE(this._session.characters.chars[this._session.selected].mapID) //캐릭터 맵 위치
+      //.writeUInt16LE(10003)
+      .writeBigUInt64LE(BigInt(0))
+      .writeFloatLE(41541.2) //X
+      .writeFloatLE(45513.97) //Y
+      .writeFloatLE(4011.51) //Z
+      .writeFloatLE(0.0) //ROC
+      .writeFloatLE(0.0)
+      .writeFloatLE(0.0);
+    //.writeInt16LE(-1)
+    //.writeBuffer(Buffer.from("000000000000000000000000000000000000000000000000000006000000000000000000", "hex"));
 
-    this.write(opCode.server.ServerResGameServerConnection, res.toBuffer());
+    //.writeInt16LE(-1); //FF FF
+
+    this.write(opCode.server.ServerResEnterGameServerConnection, res.toBuffer());
 
     //.writeBigUInt64LE(BigInt(0)) //모르겠음 (본섭: 06 01 02 00[131334] 31 32 20 00[2110001]) 32 32 일수도 있음
     //.writeUInt32LE(0); //모르겠음 (본섭: 31 32 20 00, [2110001])

@@ -25,6 +25,15 @@ class Handler {
   writeRaw(packet, cb) {
     this._session.getClient().write(packet, cb);
   }
+
+  writeBuffer(opcode, packet, cb) {
+    const encryptData = {
+      opcode: opcode,
+      data: Buffer.from(packet.replace(/ /gi, ""), "hex"),
+    };
+    const packed = packetHandler.encrypt(encryptData);
+    this._session.getClient().write(packed, cb);
+  }
 }
 
 module.exports = Handler;

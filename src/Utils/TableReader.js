@@ -2,7 +2,7 @@ const fs = require("fs");
 const { SmartBuffer } = require("smart-buffer");
 
 function readTable(table, wrapper) {
-  const res = fs.readFileSync(`./tableData/${table}.res`);
+  const res = fs.readFileSync(`./tableData/res/${table}.res`);
   const buf = SmartBuffer.fromBuffer(res);
 
   const count = buf.readUInt32LE() - 1;

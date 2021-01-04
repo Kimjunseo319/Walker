@@ -12,5 +12,111 @@
       "ip": "127.0.0.1",
       "port": "10100"
     }
-  ]
+  ],
+  "District": {
+    "10002": {
+      "ID": 10002,
+      "Name": "이터널",
+      "VBatch": "SM03_CLOUDYWEDDINGHALL",
+      "Channel": 20,
+      "Position": {
+        "x": 10000,
+        "y": 10000,
+        "z": 1000,
+        "rotation": 0,
+        "random": 50
+      }
+    },
+    "10003": {
+      "ID": 10003,
+      "Name": "로코",
+      "VBatch": "F031_ROCCOTOWN",
+      "Channel": 20,
+      "Position": {
+        "x": 10000,
+        "y": 10000,
+        "z": 1000,
+        "rotation": 0,
+        "random": 50
+      }
+    },
+    "10021": {
+      "ID": 10021,
+      "Name": "캔더스",
+      "VBatch": "F021_CANDUSCITY",
+      "Channel": 20,
+      "Position": {
+        "x": 80000,
+        "y": 76000,
+        "z": 3000,
+        "rotation": 0,
+        "random": 50
+      }
+    },
+    "10041": {
+      "ID": 10031,
+      "Name": "그레이스",
+      "VBatch": "F041_GRACECITY",
+      "Channel": 20,
+      "Position": {
+        "x": 42000,
+        "y": 46000,
+        "z": 4000,
+        "rotation": 0,
+        "random": 50
+      }
+    },
+    "10051": {
+      "ID": 10051,
+      "Name": "잔디",
+      "VBatch": "F061_GRASSCOVERCAMP",
+      "Channel": 20,
+      "Position": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "rotation": 0,
+        "random": 50
+      }
+    },
+    "10061": {
+      "ID": 10061,
+      "Name": "디플루스",
+      "VBatch": "F071_DIPLUCEHORIZON",
+      "Channel": 20,
+      "Position": {
+        "x": 53650,
+        "y": 44000,
+        "z": 28500,
+        "rotation": 90,
+        "random": 50
+      }
+    },
+    "10071": {
+      "ID": 10071,
+      "Name": "타워오브로드",
+      "VBatch": "F081_TOWEROFLORD",
+      "Channel": 20,
+      "Position": {
+        "x": 53650,
+        "y": 44000,
+        "z": 28500,
+        "rotation": 90,
+        "random": 50
+      }
+    },
+    "30021": {
+      "ID": 30021,
+      "Name": "6구역",
+      "VBatch": "D01_DISTRICT6",
+      "Channel": 20,
+      "Position": {
+        "x": 16000,
+        "y": 9000,
+        "z": 1200,
+        "rotation": 0,
+        "random": 50
+      }
+    }
+  }
 }

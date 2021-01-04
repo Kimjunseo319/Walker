@@ -10,17 +10,6 @@
 
 ## Todo
 
-## Code Refactoring
-
-> - [ ] Login Server & Login Handler
-> - [ ] Character Server & Character Handler(working)
-> - [ ] Game Server & Game Handler
-> - [ ] Character System(working)
-> - [ ] Session System
-> - [ ] Opcode System
-> - [ ] packetHandler
-> - [ ] TableReader
-
 ### Login Server
 
 > - [x] Create Login System
@@ -41,7 +30,18 @@
 
 ### Game Server
 
-> - [ ] Create Game Server Connect System(working)
+> - [x] Enter GameServer
+> - [x] Chat System(partially)
+> - [x] Dynamic Command System
+> - [x] Friend System(Search only)
+> - [ ] Gesture System(working)
+> - [x] Map Portal System
+> - [ ] Move System(working)
+> - [x] HeartBeat
+> - [ ] Rank System
+> - [ ] Channel System(working)
+> - [ ] Inventory System(working)
+> - [ ] Profile System(working, partially)
 > - [ ] etc
 
 ### Game Table

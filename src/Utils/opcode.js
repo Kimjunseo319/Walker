@@ -15,7 +15,8 @@ const opcode = {
     ClientReqEndConnection: "0x0425",
     ClientReqLogout: "0x0419",
     ClientReqGameServerConnection: "0x0313",
-    ServerResGameServerConnection: "0x0315", //0x0314? 0x0315?
+    ServerResEnterGameServerConnection: "0x0314",
+    ServerResEnterProloge: "0x0315", //0x0314? 0x0315?
     ClientReqWorldServerConnection: "0x0321",
     ServerResWorldServerConnection: "0x0322",
   },
@@ -35,6 +36,15 @@ const opcode = {
   },
   game: {
     ServerResGuildInfo: "0x3407", //로딩중에 발견
+    ServerResBattlePassLoad: "0x2A30",
+    ServerResEventBooster: "0x2A20",
+    ServerResAddEventBooster: "0x2902",
+    ServerResEnterGameServer: "0x0322",
+    ServerResSkipCutscene: "0x0319", //e2a379c70070726f6c6f6775655f72656d61696e7061726b5f31000087a1367b0100000001000000502550634046a5360200000030255063b083367b30c55e362046a5364046a536d0e98f0046f0367b0000000001000000502550630200000000000000905f553601000000e4e98f002f74357be0e98f00905f553670ea8f000000000090ea8f0083c43f7b5809547b905f553654eb8f0070ea8f0000000000c4ea8f0000000000905f55367c1a506300e08dc5de0000006cea8f001cedf9414cea8f000289217b10406165de0000001cedf94104e2ae1d4cea8f00f589217bf0476165e200000010e2ae1d88ea8f00e2ad1a7b1cedf941f04761650040610100406165f0
+  },
+  event: {
+    ServerResAttendancePlayTimeLoad: "0x2A01",
+    ServerResAttendancePlayTimeInit: "0x2A05",
   },
   world: {},
   misc: {

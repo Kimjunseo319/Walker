@@ -7,6 +7,8 @@ const TableReader = require("./Utils/TableReader");
 
 const MapTable = require("./Utils/tables/MapTable");
 const ItemTable = require("./Utils/tables/ItemTable");
+const GestureTable = require("./Utils/tables/GestureTable");
+
 const SkillTable = require("./Utils/tables/SkillTable");
 
 const ClassInfoTable = require("./Utils/tables/ClassInfoTable");
@@ -25,9 +27,16 @@ const CharacterList = require("./Utils/structs/CharacterList");
 const CharacterSession = require("./Server/Sessions/CharacterSession");
 const CharacterUtil = require("./Server/Character/CharacterUtil");
 const ItemScriptTable = require("./Utils/tables/ItemScriptTable");
+const GameUtil = require("./Server/Game/GameUtil");
+const GameHandler = require("./Server/Game/GameHandler");
+const ChatHandler = require("./Server/Game/Handlers/ChatHandler");
+const { loadCommand } = require("./Utils/CommandLoader");
+const FriendHandler = require("./Server/Game/Handlers/FriendHandler");
+const VBatch = require("./Utils/structs/VXml/Vbatch");
+const Npc = require("./Utils/structs/VXml/structs/Npc");
 
 global.SessionList = [];
-
+global.VBatchs = {};
 database.conn();
 getTableDatas();
 
@@ -51,6 +60,7 @@ function test() {
 function testproto() {
   try {
     TableReader.readTable("tb_district", MapTable);
+    //TableReader.readTable("tb_Gesture", GestureTable);
     //TableReader.readTable("tb_item", ItemTable);
     //TableReader.readTable("tb_Skill", SkillTable);
     //TableReader.readTable("tb_ClassSelect_Info", ClassInfoTable);
@@ -189,15 +199,40 @@ function itemTable() {
   console.log(arr);
 }
 
-function charFashionError() {
-  CharacterUtil.getCharacterFromDB(1080580672, 240376543, (char) => {
-    console.log(char);
-  });
+async function charFashionError() {
+  const char = await CharacterUtil.getCharacterFromDB(1080580672, 240376543);
+  const buf = char.toBuffer();
+  console.log(buf.toString("hex"));
+  const buf2 = char.toMetadataBufferRaw();
+  console.log(buf2.toString("hex"));
+  const buf3 = SmartBuffer.fromBuffer(buf).writeBuffer(buf2).toBuffer().toString("hex");
+  console.log(buf3);
 }
 
+function chatCMD() {
+  loadCommand();
+}
+
+function customEvent() {
+  new LoginEvent().register();
+  LoginEvent.test();
+}
+
+//new FriendHandler().findFriends(Buffer.from("060074C798B044BE", "hex"));
+//chatCMD();
+//testproto();
 try {
-  charFashionError();
-  //createCharacterTestV2();
+  //new VBatch("F031_ROCCOTOWN");
+  /*VBatch.readAllVBatch();
+  testproto();
+
+  global.getNpcs = Npc.getNpcs;*/
+
+  const classType = 2;
+  const cloth = 321;
+
+  const c = new FashionInventory().setDefaultClothes(classType, (cloth - 100 * classType - 1) / 10);
+  console.log(c);
 } catch (err) {
   console.log(err);
   //throw new Error(err);

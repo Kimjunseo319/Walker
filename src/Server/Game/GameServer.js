@@ -5,7 +5,7 @@ const GameHandler = require("./GameHandler.js");
 
 const gameServer = net.createServer((client) => {
   console.log(`[Game Server] ${client.address().address}:${client.remotePort}에서 접속됨!`);
-  client.on("data", (chunk) => {
+  client.on("data", async (chunk) => {
     try {
       if (chunk[0] !== 2) return;
 
@@ -17,7 +17,7 @@ const gameServer = net.createServer((client) => {
         session = new GameSession(client);
         session.setHandler(GameHandler);
       }
-      session.getHanlder().execute(packet.packet.opcode, packet.packet.data);
+      await session.getHanlder().execute(packet.packet.opcode, packet.packet.data);
     } catch (err) {
       console.error(err);
     }

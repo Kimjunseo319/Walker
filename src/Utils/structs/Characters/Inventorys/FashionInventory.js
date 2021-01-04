@@ -6,17 +6,17 @@ const { SmartBuffer } = require("smart-buffer");
 
 class FashionInventory extends Inventory {
   static FashionSlot = {
-    unk1: 0,
+    unk1: 0, //이펙트
     unk2: 1,
     unk3: 2,
     unk4: 3,
     Gloves: 4, //장갑
     unk5: 5,
     Top: 6, //상의
-    unk6: 7,
+    unk6: 7, //머리
     Stocking: 8, //스타킹
     Shoes: 9, //신발
-    unk11: 10,
+    unk11: 10, //무기
     Bottoms: 11, //하의
     unk13: 12,
     unk14: 13,

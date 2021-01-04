@@ -11,6 +11,14 @@ class Position {
   toBuffer() {
     return new SmartBuffer().writeFloatLE(this.x).writeFloatLE(this.y).writeFloatLE(this.z).writeFloatLE(this.rotation).toBuffer();
   }
+
+  /**
+   *
+   * @param {SmartBuffer} buf
+   */
+  static fromBuffer(buf) {
+    return new Position(buf.readFloatLE(), buf.readFloatLE(), buf.readFloatLE(), 0);
+  }
 }
 
 module.exports = Position;
