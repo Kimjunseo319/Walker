@@ -219,6 +219,7 @@ class CharacterHandler extends Handler {
         break;
       case opCode.character.ClientReqCharacterSlotChange:
         this.handleClientChangeCharacterSlot();
+        break;
       default:
         console.error("모르는거!", this._opcode, this._data.toString("hex"));
         break;
