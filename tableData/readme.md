@@ -1,1 +1,1 @@
-Put the Game table in res/vbatch
+Put the Game table in /res, /vbatch

@@ -15,6 +15,11 @@ const CharacterDB = require("../../Utils/models/Character");
 const Haru = require("../../Utils/structs/Characters/Classes/Haru");
 const FashionInventory = require("../../Utils/structs/Characters/Inventorys/FashionInventory");
 const Leenabi = require("../../Utils/structs/Characters/Classes/Leenabi");
+const PhotoTable = require("../../Utils/tables/PhotoTable");
+const Stats = require("../../Utils/structs/Characters/Stats");
+const SkillPreset = require("../../Utils/structs/Characters/Skills/SkillPreset");
+const Position = require("../../Utils/structs/Characters/Position");
+const Gesture = require("../../Utils/structs/Characters/Gesture");
 
 class CharacterUtil {
   /**
@@ -32,14 +37,30 @@ class CharacterUtil {
 
     const fashion = new FashionInventory().setDefaultClothes(classType, (cloth - 100 * classType - 1) / 10);
 
-    const charClass = this.getCharacterClass(classType);
-    const char = new charClass(session, appearance);
+    const stat = new Stats()
+      .setBaseStats(750, 2.5, 262.5, 28.8, 36.0, 28.8, 1.0, 801.25, 0.25)
+      .setGrowStats(400, 5.0, 140.0, 14.4, 18.0, 14.4, 0, 2.5, 0.5);
+
+    const photo = PhotoTable.getPhoto(1000 * classType + 1);
+
+    const char = new CharacterClass(
+      stat,
+      new SkillPreset(),
+      new Position(41541.2, 45513.97, 4011.51, 0.0),
+      appearance,
+      photo,
+      new Gesture(),
+      WeaponItem.getDefaultWeapon(classType),
+      fashion
+    );
+
     char.userName = userName;
     char.characterID = crypto.randomBytes(4).readUInt32LE();
     char.index = index;
     char.appearance = appearance;
     char.accountKey = session.getAccountKey();
     char.fashionInv = fashion;
+    char.classType = classType;
     return char;
   }
 
@@ -101,7 +122,7 @@ class CharacterUtil {
   static async getCharacterFromDB(charID, accountKey) {
     const charDB = await CharacterDB.findOne({ ID: charID });
 
-    const charClass = CharacterUtil.getCharacterClass(charDB.ClassType);
+    //const charClass = CharacterUtil.getCharacterClass(charDB.ClassType);
 
     const appearance = new Appearance()
       .setFashions(charDB.Appearance.Hair)
@@ -112,7 +133,22 @@ class CharacterUtil {
     const fashionInv = new FashionInventory();
     fashionInv.createInventory(charDB.Inventory.Fashion);
 
-    const char = new charClass(accountKey, appearance, weapon, charDB.Photo);
+    //const char = new charClass(accountKey, appearance, weapon, charDB.Photo);
+
+    const stat = new Stats()
+      .setBaseStats(750, 2.5, 262.5, 28.8, 36.0, 28.8, 1.0, 801.25, 0.25)
+      .setGrowStats(400, 5.0, 140.0, 14.4, 18.0, 14.4, 0, 2.5, 0.5);
+
+    const char = new CharacterClass(
+      stat,
+      new SkillPreset(),
+      new Position(41541.2, 45513.97, 4011.51, 0.0),
+      appearance,
+      charDB.Photo,
+      new Gesture(),
+      weapon,
+      fashionInv
+    );
 
     char.accountKey = accountKey;
     char.characterID = charDB.ID;
@@ -121,7 +157,7 @@ class CharacterUtil {
     char.classAdvance = charDB.ClassAdvance;
     char.classType = charDB.ClassType;
     char.level = charDB.Stat.Level;
-    char.fashionInv = fashionInv;
+    //char.fashionInv = fashionInv;
     return char;
   }
 
