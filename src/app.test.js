@@ -223,16 +223,16 @@ function customEvent() {
 //testproto();
 try {
   //new VBatch("F031_ROCCOTOWN");
-  /*VBatch.readAllVBatch();
+  VBatch.readAllVBatch();
   testproto();
 
-  global.getNpcs = Npc.getNpcs;*/
+  global.getNpcs = Npc.getNpcs;
 
-  const classType = 2;
+  /* const classType = 2;
   const cloth = 321;
 
   const c = new FashionInventory().setDefaultClothes(classType, (cloth - 100 * classType - 1) / 10);
-  console.log(c);
+  console.log(c);*/
 } catch (err) {
   console.log(err);
   //throw new Error(err);

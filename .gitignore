@@ -8,5 +8,6 @@ sw_wireshark.lua
 *.temp.js
 *.res
 *.vbatch
+*.lnk
 
 hex

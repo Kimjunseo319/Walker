@@ -1,10 +1,29 @@
+const { SmartBuffer } = require("smart-buffer");
 const Position = require("../../Characters/Position");
 
 class Npc {
+  /**
+   *
+   * @param {Number} id
+   * @param {Position} position
+   * @param {Number} waypoint
+   */
   constructor(id, position, waypoint) {
     this.id = id;
     this.position = position;
     this.waypoint = waypoint;
+  }
+
+  toBuffer() {
+    return new SmartBuffer()
+      .writeUInt16LE(this.id) //this is not vID!!!!
+      .writeUInt16LE(8192)
+      .writeBuffer(this.position.toBuffer())
+      .writeUInt16LE(1150)
+      .writeBuffer(Buffer.alloc(10))
+      .writeUInt8(1)
+      .writeUInt32LE(this.id)
+      .toBuffer();
   }
 
   /**
