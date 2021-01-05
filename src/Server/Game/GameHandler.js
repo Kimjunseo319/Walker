@@ -326,6 +326,7 @@ class GameHandler extends Handler {
         break;
       case "0x0505":
         new MoveHandler(this).movementJump();
+        break;
       case "0xF101":
         new ChannelHandler(this).handleChannelInfo();
         break;
@@ -334,6 +335,7 @@ class GameHandler extends Handler {
         break;
       case "0x24102":
         new ChannelHandler(this).handleChannelChange();
+        break;
       default:
         console.error("모르는거!", this._opcode, this._data.toString("hex"));
         break;
