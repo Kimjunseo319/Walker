@@ -11,7 +11,10 @@ function conn() {
   mongoose.connect("mongodb://localhost/WalkerProject", { useNewUrlParser: true, useUnifiedTopology: true });
 }
 
+function DBMigration() {}
+
 module.exports = {
   db: db,
   conn: conn,
+  DBMigration: DBMigration,
 };

@@ -9,8 +9,6 @@ function readTable(table, wrapper) {
   let arr = [];
   for (let i = 0; i <= count; i++) {
     const data = new wrapper(buf).loadData();
-
-    //arr.push({ data: data });
     arr.push(data);
   }
 

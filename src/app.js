@@ -10,6 +10,7 @@ const PhotoTable = require("./Utils/tables/PhotoTable");
 const { loadCommand } = require("./Utils/CommandLoader");
 const VBatch = require("./Utils/structs/VXml/Vbatch");
 const GameMap = require("./Utils/structs/World/GameMap");
+const NpcTable = require("./Utils/tables/NpcTable");
 
 global.SessionList = [];
 global.VBatchs = {};
@@ -27,10 +28,11 @@ function start() {
   gameServer.listen(10200, "0.0.0.0");
   console.log("[Game Server] Start!");
   database.conn();
+  database.DBMigration();
 }
 
 function getTableDatas() {
-  global.tables = { photos: TableReader.readTable("tb_Photo_Item", PhotoTable) };
+  global.tables = { photos: TableReader.readTable("tb_Photo_Item", PhotoTable), npcs: TableReader.readTable("tb_NPC", NpcTable) };
 }
 
 start();

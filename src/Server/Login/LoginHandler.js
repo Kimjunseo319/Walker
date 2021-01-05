@@ -8,6 +8,7 @@ const packetHandler = require("../../Utils/packetHandler");
 const AccountModel = require("../../Utils/models/Account");
 
 const Option = require("../../../option.json");
+const StoveStruct = require("../../Utils/structs/Network/StoveStruct");
 
 const salt = "@#*!_@#(ASD#&$^$!$@!D+!+_2531AFpgFD@#($*!@[/#+As+!@#)$";
 
@@ -55,6 +56,11 @@ class LoginHandler extends Handler {
         });
       }
     });
+  }
+
+  handleStoveLogin() {
+    const buf = SmartBuffer.fromBuffer(this._data);
+    StoveStruct.fromBuffer(buf);
   }
 
   handleServerList() {
@@ -136,11 +142,15 @@ class LoginHandler extends Handler {
       case opCode.login.ClientReqLogin:
         this.handleClientLogin();
         break;
+      case opCode.login.ClientReqStoveLogin:
+        this.handleStoveLogin();
+        break;
       case opCode.server.ClientReqServerList:
         this.handleServerList();
         break;
       case opCode.server.ClientReqServerConnection:
         this.handleServerInfo();
+        break;
       default:
         console.error("모르는거!", this._opcode, this._data.toString("hex"));
         break;

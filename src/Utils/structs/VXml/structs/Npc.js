@@ -1,4 +1,5 @@
 const { SmartBuffer } = require("smart-buffer");
+const NpcTable = require("../../../tables/NpcTable");
 const Position = require("../../Characters/Position");
 
 class Npc {
@@ -7,28 +8,31 @@ class Npc {
    * @param {Number} id
    * @param {Position} position
    * @param {Number} waypoint
+   * @param {NpcTable} table
    */
-  constructor(id, position, waypoint) {
-    this.id = id;
+  constructor(id, position, waypoint, table) {
+    this.vID = id;
     this.position = position;
     this.waypoint = waypoint;
+    this.table = table;
   }
 
   toBuffer() {
     return new SmartBuffer()
-      .writeUInt16LE(this.id) //this is not vID!!!!
+      .writeUInt16LE(this.table.ID) //this is not vID!!!!
       .writeUInt16LE(8192)
       .writeBuffer(this.position.toBuffer())
       .writeUInt16LE(1150)
       .writeBuffer(Buffer.alloc(10))
       .writeUInt8(1)
-      .writeUInt32LE(this.id)
+      .writeUInt32LE(this.vID)
       .toBuffer();
   }
 
   /**
    *
    * @param {String} name TownName or MazeName
+   * @return {Npc[]}
    */
   static getNpcs(name) {
     const npcs = [];
@@ -42,7 +46,9 @@ class Npc {
 
         const waypoint = entity.m_iWaypoint.value;
 
-        npcs.push({ id, position, waypoint });
+        const table = NpcTable.getNpc(id);
+
+        npcs.push(new Npc(id, position, waypoint, table));
       }
     });
     console.log(npcs);

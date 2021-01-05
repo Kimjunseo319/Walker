@@ -11,3 +11,5 @@ sw_wireshark.lua
 *.lnk
 
 hex
+
+src/test.app.js

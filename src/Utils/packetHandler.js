@@ -123,7 +123,6 @@ function opcodeFormatV2(opcode) {
   const middle = Math.ceil(code.length / 2);
   const type = "0x" + code.slice(0, middle);
   const cmd = "0x" + code.slice(middle);
-  //console.log({ type: type, cmd: cmd });
   return { type: type, cmd: cmd };
 }
 

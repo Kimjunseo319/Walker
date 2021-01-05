@@ -13,6 +13,7 @@ const GestureHandler = require("./Handlers/GestureHandler");
 const MoveHandler = require("./Handlers/MoveHandler");
 const PostJoinEvent = require("./Events/PostJoinEvent");
 const ChannelHandler = require("./Handlers/ChannelHandler");
+const Npc = require("../../Utils/structs/VXml/structs/Npc");
 
 class GameHandler extends Handler {
   /**
@@ -120,7 +121,16 @@ class GameHandler extends Handler {
     });
   }
 
-  sendNPCs(cb) {
+  sendNpcs(cb = () => {}) {
+    const npcs = Npc.getNpcs("F031_ROCCOTOWN");
+    const buf = new SmartBuffer().writeUInt16LE(npcs.length);
+    npcs.forEach((npc) => {
+      buf.writeBuffer(npc.toBuffer());
+    });
+    this.write("0x0422", buf.toBuffer(), cb);
+  }
+
+  sendNPCsRaw(cb) {
     this.writeBuffer(
       "0x0422",
       "1B 00 E9 03 00 20 4D 40 3C 46 85 B0 00 46 00 00 C8 42 00 00 34 C3 7E 04 00 00 00 00 00 00 00 00 00 00 01 63 8B 01 00 EC 03 00 20 1C 52 31 46 85 3E ED 45 03 00 C8 42 00 00 34 C3 7E 04 00 00 00 00 00 00 00 00 00 00 01 DD 8A 01 00 F5 03 00 20 9C 62 51 46 96 A3 01 46 00 00 C8 42 00 00 34 C3 7E 04 00 00 00 00 00 00 00 00 00 00 01 E2 8A 01 00 F6 03 00 20 29 2F 20 46 C5 CC 11 46 FE FF C7 42 00 00 B4 42 7E 04 00 00 00 00 00 00 00 00 00 00 01 F3 8A 01 00 FE 03 00 20 60 43 20 46 D7 1B 07 46 00 00 C8 42 00 00 B4 42 7E 04 00 00 00 00 00 00 00 00 00 00 01 E8 8A 01 00 03 04 00 20 3D 8A 20 46 D3 A6 F9 45 00 00 C8 42 00 00 B4 42 7E 04 00 00 00 00 00 00 00 00 00 00 01 A5 8B 01 00 EA 03 00 20 77 7B 5B 46 85 E5 20 46 B2 3D D4 43 00 00 28 C2 7E 04 00 00 00 00 00 00 00 00 00 00 01 85 8C 01 00 F0 03 00 20 00 74 86 46 00 C0 05 46 00 00 C8 42 00 00 0C 43 7E 04 00 00 00 00 00 00 00 00 00 00 01 8B 8A 01 00 F1 03 00 20 A5 36 8D 46 9B CC 11 46 00 00 C8 42 00 00 B4 C2 7E 04 00 00 00 00 00 00 00 00 00 00 01 8C 8A 01 00 F3 03 00 20 00 4C 81 46 00 1C 09 46 16 02 C8 42 00 00 34 43 7E 04 00 00 00 00 00 00 00 00 00 00 01 8D 8A 01 00 FC 03 00 20 EA 96 72 46 71 3E DF 45 FD FF C7 42 00 00 06 C3 7E 04 00 00 00 00 00 00 00 00 00 00 01 91 8A 01 00 EB 03 00 20 18 B2 50 46 CF A8 2F 46 92 8B C7 42 00 00 00 00 7E 04 00 00 00 00 00 00 00 00 00 00 01 AA 8A 01 00 EF 03 00 20 B6 51 39 46 AD 22 45 46 00 90 C9 42 00 00 00 00 7E 04 00 00 00 00 00 00 00 00 00 00 01 67 8B 01 00 F2 03 00 20 00 B0 24 46 00 88 3D 46 00 90 C9 42 00 00 40 42 7E 04 00 00 00 00 00 00 00 00 00 00 01 9D 8A 01 00 F7 03 00 20 FF 3B 42 46 5D 24 36 46 00 90 C9 42 00 00 B4 C2 7E 04 00 00 00 00 00 00 00 00 00 00 01 9F 8A 01 00 F9 03 00 20 9A F7 30 46 B5 2A 2A 46 96 78 C9 42 00 00 B4 42 7E 04 00 00 11 04 00 00 00 00 00 00 01 43 8B 01 00 FA 03 00 20 F1 98 2F 46 21 28 45 46 00 90 C9 42 00 00 00 00 7E 04 00 00 00 00 00 00 00 00 00 00 01 66 8B 01 00 FF 03 00 20 D6 69 3C 46 67 16 42 46 00 90 C9",
@@ -295,7 +305,7 @@ class GameHandler extends Handler {
         this.handleCharacterInfo();
         break;
       case "0x0406": //ClientReqOthersInfo
-        this.sendNPCs();
+        this.sendNpcs();
         break;
       case "0x0701": //ClientReqChatInfo
         new ChatHandler(this).handleChat();
