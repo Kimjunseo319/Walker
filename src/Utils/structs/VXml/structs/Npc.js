@@ -6,16 +6,15 @@ class Npc {
   /**
    *
    * @param {Number} id
+   * @param {Number} vid
    * @param {Position} position
    * @param {Number} waypoint
-   * @param {NpcTable} table
    */
-  constructor(id, position, waypoint, table, orid) {
-    this.vID = id;
+  constructor(id, vid, position, waypoint) {
+    this.id = id;
+    this.vID = vid;
     this.position = position;
     this.waypoint = waypoint;
-    this.table = table;
-    this.id = orid;
   }
 
   toBuffer() {
@@ -40,15 +39,19 @@ class Npc {
 
     global.VBatchs[name].Batchs[0].VMonsterSpawnBox.forEach((entity) => {
       if (entity.m_eType1.value === "NPC") {
-        const id = entity.m_iMonsterID1.value;
+        const vid = entity.m_iMonsterID1.value;
 
         const position = Npc.getPosition(entity);
 
+        const rotation = entity.m_fRotation.value;
+
+        position.rotation = rotation;
+
         const waypoint = entity.m_iWaypoint.value;
 
-        const table = NpcTable.getNpc(id);
+        const table = NpcTable.getNpc(vid);
 
-        npcs.push(new Npc(id, position, waypoint, table, this.tester(table)));
+        npcs.push(new Npc(this.getrandomID(table), vid, position, waypoint));
       }
     });
     console.log(npcs);
@@ -59,7 +62,7 @@ class Npc {
    *
    * @param {NpcTable} table
    */
-  static tester(table) {
+  static getrandomID(table) {
     let add = table.ID;
     for (let i = 0; i < 46; i++) {
       if (table[`unk${i}`] < 50) add += table[`unk${i}`] + Math.floor(Math.random() * 100);
