@@ -75,7 +75,7 @@ function getMapID(str) {
     case "루인":
       return 10041;
     case "잔디":
-      return 10101;
+      return 10051;
     case "디플루스":
       return 10061;
     case "로드":

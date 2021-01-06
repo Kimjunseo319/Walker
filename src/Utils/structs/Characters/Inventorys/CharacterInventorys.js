@@ -1,8 +1,9 @@
 class CharacterInventorys {
   constructor() {
-    this.default = null;
+    this.item = null;
     this.fashion = null;
-    this.weapon = null; //temp
+    this.equipFashion = null;
+    this.cash = null;
   }
 }
 

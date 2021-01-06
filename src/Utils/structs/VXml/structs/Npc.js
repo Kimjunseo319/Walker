@@ -18,15 +18,19 @@ class Npc {
   }
 
   toBuffer() {
-    return new SmartBuffer()
-      .writeUInt16LE(this.id)
-      .writeUInt16LE(8192)
-      .writeBuffer(this.position.toBuffer())
-      .writeUInt16LE(1150)
-      .writeBuffer(Buffer.alloc(10)) //waypoint?
-      .writeUInt8(1) //visiablity?
-      .writeUInt32LE(this.vID)
-      .toBuffer();
+    return (
+      new SmartBuffer()
+        .writeUInt16LE(this.id)
+        .writeUInt16LE(8192)
+        .writeBuffer(this.position.toBuffer())
+        .writeUInt16LE(1150)
+        .writeUInt16LE(0) //waypoint or spe?
+        .writeBigUInt64LE(BigInt(this.waypoint)) //waypoint?
+        //.writeBuffer(Buffer.alloc(10)) //waypoint?
+        .writeUInt8(1) //visiablity?
+        .writeUInt32LE(this.vID)
+        .toBuffer()
+    );
   }
 
   /**
@@ -36,6 +40,8 @@ class Npc {
    */
   static getNpcs(name) {
     const npcs = [];
+
+    let add = 0;
 
     global.VBatchs[name].Batchs[0].VMonsterSpawnBox.forEach((entity) => {
       if (entity.m_eType1.value === "NPC") {
@@ -49,9 +55,7 @@ class Npc {
 
         const waypoint = entity.m_iWaypoint.value;
 
-        const table = NpcTable.getNpc(vid);
-
-        npcs.push(new Npc(this.getrandomID(table), vid, position, waypoint));
+        npcs.push(new Npc(add++, vid, position, waypoint));
       }
     });
     console.log(npcs);
