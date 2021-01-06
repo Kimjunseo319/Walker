@@ -10,21 +10,22 @@ class Npc {
    * @param {Number} waypoint
    * @param {NpcTable} table
    */
-  constructor(id, position, waypoint, table) {
+  constructor(id, position, waypoint, table, orid) {
     this.vID = id;
     this.position = position;
     this.waypoint = waypoint;
     this.table = table;
+    this.id = orid;
   }
 
   toBuffer() {
     return new SmartBuffer()
-      .writeUInt16LE(this.table.ID) //this is not vID!!!!
+      .writeUInt16LE(this.id)
       .writeUInt16LE(8192)
       .writeBuffer(this.position.toBuffer())
       .writeUInt16LE(1150)
-      .writeBuffer(Buffer.alloc(10))
-      .writeUInt8(1)
+      .writeBuffer(Buffer.alloc(10)) //waypoint?
+      .writeUInt8(1) //visiablity?
       .writeUInt32LE(this.vID)
       .toBuffer();
   }
@@ -42,17 +43,28 @@ class Npc {
         const id = entity.m_iMonsterID1.value;
 
         const position = Npc.getPosition(entity);
-        //entity.m_vPosTopLeft.value ???
 
         const waypoint = entity.m_iWaypoint.value;
 
         const table = NpcTable.getNpc(id);
 
-        npcs.push(new Npc(id, position, waypoint, table));
+        npcs.push(new Npc(id, position, waypoint, table, this.tester(table)));
       }
     });
     console.log(npcs);
     return npcs;
+  }
+
+  /**
+   *
+   * @param {NpcTable} table
+   */
+  static tester(table) {
+    let add = table.ID;
+    for (let i = 0; i < 46; i++) {
+      if (table[`unk${i}`] < 50) add += table[`unk${i}`] + Math.floor(Math.random() * 100);
+    }
+    return add;
   }
 
   static getPosition(entity) {

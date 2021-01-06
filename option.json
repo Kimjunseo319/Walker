@@ -53,7 +53,7 @@
         "random": 50
       }
     },
-    "10041": {
+    "10031": {
       "ID": 10031,
       "Name": "그레이스",
       "VBatch": "F041_GRACECITY",
@@ -66,8 +66,8 @@
         "random": 50
       }
     },
-    "10051": {
-      "ID": 10051,
+    "10101": {
+      "ID": 10101,
       "Name": "잔디",
       "VBatch": "F061_GRASSCOVERCAMP",
       "Channel": 20,

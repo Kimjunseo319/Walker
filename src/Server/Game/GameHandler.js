@@ -3,6 +3,8 @@ const Handler = require("../../Utils/Handler");
 const GameSession = require("../Sessions/GameSession");
 
 const { opCode } = require("../../Utils/opcode");
+const option = require("../../../option.json");
+
 const packetHandler = require("../../Utils/packetHandler");
 
 const ChatHandler = require("./Handlers/ChatHandler");
@@ -14,6 +16,7 @@ const MoveHandler = require("./Handlers/MoveHandler");
 const PostJoinEvent = require("./Events/PostJoinEvent");
 const ChannelHandler = require("./Handlers/ChannelHandler");
 const Npc = require("../../Utils/structs/VXml/structs/Npc");
+const CharacterClass = require("../../Utils/structs/Characters/Classes/CharacterClass");
 
 class GameHandler extends Handler {
   /**
@@ -122,8 +125,13 @@ class GameHandler extends Handler {
   }
 
   sendNpcs(cb = () => {}) {
-    const npcs = Npc.getNpcs("F031_ROCCOTOWN");
+    const char = this._session.character;
+
+    const map = option.District[char.mapID];
+
+    const npcs = Npc.getNpcs(map ? map.VBatch : "F031_ROCCOTOWN");
     const buf = new SmartBuffer().writeUInt16LE(npcs.length);
+
     npcs.forEach((npc) => {
       buf.writeBuffer(npc.toBuffer());
     });
